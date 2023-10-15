@@ -1,3 +1,4 @@
 # 29_capstone_strava
 
-https://developers.strava.com/
+API: https://developers.strava.com/
+DBSchema: https://app.quickdatabasediagrams.com/#/d/E6VDZp
