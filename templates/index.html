@@ -8,12 +8,14 @@
 </head>
 
 <body>
-    <h1>Hello World</h1>
 
     <div class="container">
         {% for category, msg in get_flashed_messages(with_categories=True) %}
         <div class="alert alert-{{ category }}">{{ msg }}</div>
+        {% endfor %}
+
         {% block content %}
+        <h1>Hello World</h1>
         {% endblock %}
     </div>
 </body>

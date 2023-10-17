@@ -57,7 +57,7 @@ class User(db.Model):
 
 class Player(db.Model):
     """Players"""
-    __tablename__ = 'Players'
+    __tablename__ = 'players'
 
     def __repr__(self):
         p = self
