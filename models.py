@@ -69,10 +69,15 @@ class Player(db.Model):
     name = db.Column(db.String,
                      nullable=False)
     
+    position = db.Column(db.String,
+                         nullable=False)
+    
     user_id = db.Column(db.Integer,
                         db.ForeignKey('users.user_id', ondelete='cascade'))
     team_id = db.Column(db.Integer,
                     db.ForeignKey('teams.team_id', ondelete='cascade'))
+    
+    team = db.relationship('Team', backref='teams')
 
     
 class Team(db.Model):
@@ -88,3 +93,5 @@ class Team(db.Model):
                       nullable=False)
     user_id = db.Column(db.Integer,
                         db.ForeignKey('users.user_id', ondelete='cascade'))
+    
+    user = db.relationship('User', backref='users')

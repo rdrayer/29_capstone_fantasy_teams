@@ -1,0 +1,19 @@
+{% extends 'index.html' %}
+
+{% block content %}
+
+<h1>All Teams</h1>
+<p><a href="/teams/new">Create team</a></p>
+<p><a href="/logout">Logout</a></p>
+
+<ul>
+    {% for team in teams %}
+    <li>
+        {{ team.name }} - {{ team.user.username }}
+    </li>
+    {% endfor %}
+</ul>
+
+<h2></h2>
+
+{% endblock %}

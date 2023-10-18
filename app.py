@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request, render_template, redirect, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
-from models import db, connect_db, User
-from forms import RegisterForm, LoginForm
+from models import db, connect_db, User, Team, Player
+from forms import RegisterForm, LoginForm, TeamForm, PlayerForm
 
 app = Flask(__name__)
 
@@ -38,7 +38,7 @@ def register_user():
         db.session.commit()
 
         flash('Welcome! Account successfully created', 'success')
-        return redirect('/fantasy.html')
+        return redirect('/teams')
     return render_template('/register.html', form=form)
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -52,11 +52,31 @@ def login_user():
         if user:
             flash(f"Welcome {user.username}!", "success")
             session['username'] = user.username
-            return redirect('/fantasy')
+            return redirect('/teams')
         else: 
             form.username.errors = ['Invalid username/password']
     return render_template('login.html', form=form)
 
-@app.route('/fantasy')
-def fantasy():
-    return render_template('/fantasy.html')
+@app.route('/teams')
+def display_teams():
+    teams = Team.query.all()
+    return render_template('/teams.html', teams=teams)
+
+@app.route('/logout')
+def logout():
+    session.pop('username') 
+    return redirect('/')
+
+@app.route('/teams/new', methods=['GET', 'POST'])
+def create_team():
+    form = TeamForm()
+    user = User.query.get(session['username'])
+    if form.validate_on_submit():
+        name = form.name.data
+        sport = form.name.data
+
+        new_team = Team(name=name, sport=sport, user_id=user.id)
+        db.session.add(new_team)
+        db.session.commit()
+        return redirect('/teams')
+    return render_template('/create_team.html', form=form)

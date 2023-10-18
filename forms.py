@@ -12,3 +12,11 @@ class RegisterForm(FlaskForm):
 class LoginForm(FlaskForm):
     username = StringField("Username", validators=[InputRequired()])
     password = PasswordField("Password", validators=[InputRequired()])
+
+class TeamForm(FlaskForm):
+    name = StringField("Name", validators=[InputRequired()])
+    sport = StringField("Sport", validators=[InputRequired()])
+
+class PlayerForm(FlaskForm):
+    name = StringField("Name", validators=[InputRequired()])
+    position = StringField("Position", validators=[InputRequired()])

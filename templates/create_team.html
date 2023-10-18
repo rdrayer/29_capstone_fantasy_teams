@@ -1,10 +1,9 @@
 {% extends 'index.html' %}
-{% block title %} Register New User {% endblock %}
+{% block title %} Create team form {% endblock %}
 
 {% block content %}
 
-<h1>Create your account</h1>
-<p>Already have an account? <a href="/login">Login here</a></p>
+<h1>Create your team</h1>
 
 <form method="POST">
     {{ form.hidden_tag() }}
@@ -21,7 +20,7 @@
     </p>
     {% endfor %}
 
-    <button type="submit">Register</button>
+    <button type="submit">Create team</button>
 </form>
 
 {% endblock %}
