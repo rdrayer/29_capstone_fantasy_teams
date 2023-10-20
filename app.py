@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, render_template, redirect, flash, session
+from flask import Flask, jsonify, request, render_template, redirect, flash, session, g
 from flask_debugtoolbar import DebugToolbarExtension
 from models import db, connect_db, User, Team, Player
 from forms import RegisterForm, LoginForm, TeamForm, PlayerForm
@@ -16,6 +16,16 @@ app.config['SQLALCHEMY_ECHO'] = True
 connect_db(app)
 with app.app_context():
     db.create_all()
+
+@app.before_request
+def add_user_to_g():
+    """If we're logged in, add curr user to Flask global."""
+
+    if 'username' in session:
+        g.user = User.query.filter(User.username == session['username']).first()
+
+    else:
+        g.user = None
 
 @app.route('/')
 def home():
@@ -69,13 +79,18 @@ def logout():
 
 @app.route('/teams/new', methods=['GET', 'POST'])
 def create_team():
+
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+    
     form = TeamForm()
-    user = User.query.get(session['username'])
+    user = g.user
     if form.validate_on_submit():
         name = form.name.data
         sport = form.name.data
 
-        new_team = Team(name=name, sport=sport, user_id=user.id)
+        new_team = Team(name=name, sport=sport, user_id=user.user_id)
         db.session.add(new_team)
         db.session.commit()
         return redirect('/teams')
