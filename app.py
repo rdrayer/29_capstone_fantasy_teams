@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request, render_template, redirect, flash, session, g
+import requests
 from flask_debugtoolbar import DebugToolbarExtension
 from models import db, connect_db, User, Team, Player
 from forms import RegisterForm, LoginForm, TeamForm, PlayerForm
@@ -95,3 +96,42 @@ def create_team():
         db.session.commit()
         return redirect('/teams')
     return render_template('/create_team.html', form=form)
+
+@app.route('/teams/<int:team_id>/add', methods=['GET', 'POST'])
+def add_players(team_id):
+
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+    
+    team = Team.query.get(team_id)
+
+    form = PlayerForm()
+    if form.validate_on_submit():
+        name = form.name.data
+        position = form.position.data
+
+        split_name = name.split(' ')
+        api_url = 'https://www.thesportsdb.com/api/v1/json/3/searchplayers.php?p={0}%20{1}'.format(split_name[0], split_name[1])
+        response = requests.get(api_url)
+        data = response.json()
+        if data == {'player': None}:
+            flash("Please enter a valid athlete.", "danger")
+        elif data != {'player': None}:
+            new_player = Player(name=name, position=position, user_id=g.user.user_id, team_id=team.team_id)
+            db.session.add(new_player)
+            db.session.commit()
+            return redirect(f'/teams/{team.team_id}/detail')
+
+    return render_template('/add_players.html', form=form)
+
+@app.route('/teams/<int:team_id>/detail', methods=['GET', 'POST'])
+def display_players(team_id):
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+    team = Team.query.get(team_id)
+    players = Player.query.filter(Player.team_id == team.team_id)
+    print('PRINTINGINSOIJFLSJF')
+    print(players)
+    return render_template('team_detail.html', team=team, players=players)

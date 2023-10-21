@@ -1,0 +1,27 @@
+{% extends 'index.html' %}
+
+{% block content %}
+
+
+<h1>{{ team.name }}</h1>
+<p><a href="/teams/{{ team.team_id }}/add">Add player</a></p>
+<p><a href="/teams">All Teams</a></p>
+<p><a href="/logout">Logout</a></p>
+
+{% if players is not none %}
+<ul>
+    {% for player in players %}
+    <li>
+        {{ player.name }} - {{ player.position }}</a>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>No players have been added. Add one <a href="/teams/{{ team.team_id }}/add"> here</a>.</p>
+{% endif %}
+
+
+
+
+
+{% endblock %}

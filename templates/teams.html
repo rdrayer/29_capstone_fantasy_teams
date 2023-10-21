@@ -9,7 +9,7 @@
 <ul>
     {% for team in teams %}
     <li>
-        {{ team.name }} - {{ team.user.username }}
+        <a href="/teams/{{ team.team_id }}/detail">{{ team.name }} - {{ team.user.username }}</a>
     </li>
     {% endfor %}
 </ul>
